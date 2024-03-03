@@ -23,7 +23,6 @@ public class UserController {
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserDto userDto,
             BindingResult result){
-
         try {
             if (result.hasErrors()){
                 List<String> errorMessage = result.getFieldErrors()
