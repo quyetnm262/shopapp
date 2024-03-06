@@ -12,9 +12,9 @@ public interface IOrderDetailService {
 
     OrderDetailResponse getOrderDetail(Long orderDetailId) throws Exception;
 
-    OrderDetailResponse updateOrderDetail(Long orderDetailId, OrderDetailDto orderDetailDto);
+    OrderDetailResponse updateOrderDetail(Long orderDetailId, OrderDetailDto orderDetailDto) throws Exception;
 
-    void deleteOrderDetail(Long orderDetailId);
+    void deleteOrderDetail(Long orderDetailId) throws Exception;
 
     List<OrderDetailResponse> getOrderDetails(Long orderId);
 

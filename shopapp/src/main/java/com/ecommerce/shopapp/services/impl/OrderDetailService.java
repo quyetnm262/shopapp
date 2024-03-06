@@ -67,12 +67,31 @@ public class OrderDetailService implements IOrderDetailService {
     }
 
     @Override
-    public OrderDetailResponse updateOrderDetail(Long orderDetailId, OrderDetailDto orderDetailDto) {
-        return null;
+    public OrderDetailResponse updateOrderDetail(Long orderDetailId, OrderDetailDto orderDetailDto) throws Exception {
+
+        OrderDetail existedOrderDetail = orderDetailRepository.findById(orderDetailId)
+                .orElseThrow(()->new DataNotFoundException("Cannot find order detail" +
+                        "with id = "+ orderDetailId));
+        Order existedOrder = orderRepository.findById(orderDetailDto.getOrderId())
+                .orElseThrow(() -> new DataNotFoundException("Cannot find order detail" +
+                        " with order id = " + orderDetailDto.getOrderId() ));
+        Product existedProduct = productRepository.findById(orderDetailDto.getProductId())
+                .orElseThrow(() -> new DataNotFoundException("Cannot find product" +
+                        " with product id = " + orderDetailDto.getProductId()));
+        modelMapper.map(orderDetailDto,existedOrderDetail);
+        existedOrderDetail.setOrder(existedOrder);
+        existedOrderDetail.setProduct(existedProduct);
+
+        return modelMapper.map(existedOrderDetail,OrderDetailResponse.class);
     }
 
     @Override
-    public void deleteOrderDetail(Long orderDetailId) {
+    public void deleteOrderDetail(Long orderDetailId) throws DataNotFoundException {
+        //Xoá cứng
+        OrderDetail existOrderDetail = orderDetailRepository.findById(orderDetailId)
+                .orElseThrow(()->new DataNotFoundException("Cannot find order detail" +
+                        "with id = "+ orderDetailId));
+        orderDetailRepository.delete(existOrderDetail);
 
     }
 

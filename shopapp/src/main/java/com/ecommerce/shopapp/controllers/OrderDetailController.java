@@ -75,7 +75,7 @@ public class OrderDetailController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateOrderDetail(
-            @Valid @PathVariable("id") Long id,
+            @Valid @PathVariable("id") Long orderDetailId,
             @RequestBody OrderDetailDto orderDetailDto,
             BindingResult result
     ){
@@ -89,7 +89,9 @@ public class OrderDetailController {
                 return ResponseEntity.badRequest().body(errorContent);
             }
 
-            return ResponseEntity.ok("Update the order detail have id = "+id+" successfully");
+            OrderDetailResponse orderDetailResponse = orderDetailService.updateOrderDetail(orderDetailId,orderDetailDto);
+
+            return ResponseEntity.ok(orderDetailResponse);
 
         }catch (Exception e){
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -101,7 +103,7 @@ public class OrderDetailController {
             @Valid @PathVariable("id") Long id
     ){
         try {
-
+            orderDetailService.deleteOrderDetail(id);
             return ResponseEntity.ok("Delete the order detail have id = "+id+" successfully");
 
         }catch (Exception e){
