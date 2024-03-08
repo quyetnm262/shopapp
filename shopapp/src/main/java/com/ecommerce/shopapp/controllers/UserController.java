@@ -3,6 +3,7 @@ package com.ecommerce.shopapp.controllers;
 
 import com.ecommerce.shopapp.dtos.UserDto;
 import com.ecommerce.shopapp.dtos.UserLoginDto;
+import com.ecommerce.shopapp.models.User;
 import com.ecommerce.shopapp.services.IUserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -39,8 +40,8 @@ public class UserController {
                 return ResponseEntity.badRequest().body("The password not match");
             }
 
-            iUserService.createUser(userDto);
-            return ResponseEntity.ok("The user is created");
+            User user = iUserService.createUser(userDto);
+            return ResponseEntity.ok(user);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
@@ -50,8 +51,13 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginDto userLoginDto){
 
-        String token = iUserService.login(userLoginDto.getPhoneNumber(), userLoginDto.getPassword());
+        try {
+            String token = iUserService.login(userLoginDto.getPhoneNumber(), userLoginDto.getPassword());
 
-        return ResponseEntity.ok("Login successful");
+            return ResponseEntity.ok(token);
+
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 }

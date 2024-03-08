@@ -5,7 +5,7 @@ import com.ecommerce.shopapp.exceptions.DataNotFoundException;
 import com.ecommerce.shopapp.models.User;
 
 public interface IUserService {
-    User createUser(UserDto userDto) throws DataNotFoundException;
+    User createUser(UserDto userDto) throws Exception;
 
-    String login(String phoneNumber, String password);
+    String login(String phoneNumber, String password) throws Exception;
 }
