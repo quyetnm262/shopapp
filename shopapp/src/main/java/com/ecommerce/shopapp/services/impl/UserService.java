@@ -8,7 +8,7 @@ import com.ecommerce.shopapp.models.User;
 import com.ecommerce.shopapp.repositories.RoleRepository;
 import com.ecommerce.shopapp.repositories.UserRepository;
 import com.ecommerce.shopapp.services.IUserService;
-import com.ecommerce.shopapp.utils.JwtTokenUtils;
+import com.ecommerce.shopapp.components.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;

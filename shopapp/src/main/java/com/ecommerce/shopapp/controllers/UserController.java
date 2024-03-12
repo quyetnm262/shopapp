@@ -4,7 +4,11 @@ package com.ecommerce.shopapp.controllers;
 import com.ecommerce.shopapp.dtos.UserDto;
 import com.ecommerce.shopapp.dtos.UserLoginDto;
 import com.ecommerce.shopapp.models.User;
+import com.ecommerce.shopapp.responses.LoginResponse;
+import com.ecommerce.shopapp.responses.RegisterResponse;
 import com.ecommerce.shopapp.services.IUserService;
+import com.ecommerce.shopapp.components.LocalizationUtils;
+import com.ecommerce.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,6 +29,8 @@ public class UserController {
 
     private final IUserService iUserService;
 
+    private final LocalizationUtils localizationUtils;
+
     @PostMapping("/register")
     public ResponseEntity<?> createUser(
             @Valid @RequestBody UserDto userDto,
@@ -37,13 +43,20 @@ public class UserController {
                 return ResponseEntity.badRequest().body(errorMessage);
             }
             if (!userDto.getPassword().equals(userDto.getRetypePassword())){
-                return ResponseEntity.badRequest().body("The password not match");
+                return ResponseEntity.badRequest().body(
+                        localizationUtils.getLocalizationMessage(MessageKeys.PASSWORD_NOT_MATCH)
+                );
             }
 
             User user = iUserService.createUser(userDto);
             return ResponseEntity.ok(user);
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    RegisterResponse.builder()
+                            .message(localizationUtils
+                                    .getLocalizationMessage(MessageKeys.REGISTER_FAILED, e.getMessage()))
+                            .build()
+            );
         }
 
     }
@@ -54,10 +67,19 @@ public class UserController {
         try {
             String token = iUserService.login(userLoginDto.getPhoneNumber(), userLoginDto.getPassword());
 
-            return ResponseEntity.ok(token);
+            return ResponseEntity.ok(LoginResponse.builder()
+                    .message(localizationUtils
+                            .getLocalizationMessage(MessageKeys.LOGIN_SUCCESSFULLY))
+                    .token(token)
+                    .build());
 
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(
+                    LoginResponse.builder()
+                            .message(localizationUtils
+                                    .getLocalizationMessage(MessageKeys.LOGIN_FAIL, e.getMessage()))
+                            .build()
+            );
         }
     }
 }

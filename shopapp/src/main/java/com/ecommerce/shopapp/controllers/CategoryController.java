@@ -2,7 +2,11 @@ package com.ecommerce.shopapp.controllers;
 
 import com.ecommerce.shopapp.dtos.CategoryDto;
 import com.ecommerce.shopapp.models.Category;
+import com.ecommerce.shopapp.responses.LoginResponse;
+import com.ecommerce.shopapp.responses.UpdateCategoryResponse;
 import com.ecommerce.shopapp.services.ICategoryService;
+import com.ecommerce.shopapp.components.LocalizationUtils;
+import com.ecommerce.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +23,8 @@ import java.util.List;
 public class CategoryController {
 
     private final ICategoryService iCategoryService;
+
+    private final LocalizationUtils localizationUtils;
 
     @GetMapping("") //http://localhost:8081/api/v1/categories?page=1&limit=10
     public ResponseEntity<List<Category>> getAllCategory(
@@ -51,9 +57,23 @@ public class CategoryController {
     public ResponseEntity<?> updateCategory(
             @Valid @PathVariable("id") Long categoryId,
             @RequestBody CategoryDto categoryDto){
-        Category category = iCategoryService.updateCategory(categoryId, categoryDto);
 
-        return ResponseEntity.ok(category);
+        try{
+            iCategoryService.updateCategory(categoryId, categoryDto);
+
+            return ResponseEntity.ok(UpdateCategoryResponse.builder()
+                    .message(localizationUtils
+                            .getLocalizationMessage(MessageKeys.CATEGORY_UPDATE_SUCCESSFULLY))
+                    .build());
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(
+                    LoginResponse.builder()
+                            .message(localizationUtils.getLocalizationMessage(MessageKeys.CATEGORY_UPDATE_FAILED, e.getMessage()))
+                            .build()
+            );
+        }
+
     }
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteCategory(
