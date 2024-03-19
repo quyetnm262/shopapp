@@ -21,6 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -55,7 +56,8 @@ public class ProductController {
             @RequestParam("limit") int limit
     ){
         PageRequest pageRequest = PageRequest.of(page, limit,
-                Sort.by("createdAt").descending());
+//                Sort.by("createdAt").descending());
+                Sort.by("id").ascending());
         Page<ProductResponse> productPage = iProductService.getAllProduct(pageRequest);
         int totalPage = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
@@ -174,6 +176,7 @@ public class ProductController {
     }
 
     @PutMapping("/{id}")
+    @Transactional
     public ResponseEntity<?> updateProduct(
             @PathVariable("id") Long productId,
             @RequestBody ProductDto productDto,
@@ -229,7 +232,7 @@ public class ProductController {
 //    @PostMapping("/generateFakerProducts")
     public ResponseEntity<?> generateFakerProducts(){
         Faker faker = new Faker();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 50; i++) {
             String productName = faker.commerce().productName();
             if (iProductService.existsProductByName(productName)){
                 continue;
@@ -255,6 +258,7 @@ public class ProductController {
 
 
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long productId) {
         try {
 

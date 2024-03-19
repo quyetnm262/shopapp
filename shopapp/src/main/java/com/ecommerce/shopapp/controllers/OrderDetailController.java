@@ -7,6 +7,7 @@ import com.ecommerce.shopapp.services.IOrderDetailService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -74,6 +75,8 @@ public class OrderDetailController {
     }
 
     @PutMapping("/{id}")
+    @Transactional
+
     public ResponseEntity<?> updateOrderDetail(
             @Valid @PathVariable("id") Long orderDetailId,
             @RequestBody OrderDetailDto orderDetailDto,
@@ -99,6 +102,7 @@ public class OrderDetailController {
     }
 
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<?> deleteOrderDetail(
             @Valid @PathVariable("id") Long id
     ){

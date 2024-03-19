@@ -76,9 +76,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             final List<Pair<String, String>> bypassTokens = Arrays.asList(
                     Pair.of(prefix+"/categories", "GET"),
                     Pair.of(prefix+"/products", "GET"),
+//                    Pair.of(prefix+"/products", "POST"),
                     Pair.of(prefix+"/users/login", "POST"),
                     Pair.of(prefix+"/users/register", "POST"),
-                    Pair.of(prefix+"/roles", "GET")
+                    Pair.of(prefix+"/roles", "GET"),
+                    Pair.of(prefix+"/products/generateFakerProducts", "POST")
 
             );
             for (Pair<String, String> bypassToken: bypassTokens){
@@ -100,9 +102,11 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
                 Pair.of(prefix+"/categories", "GET"),
                 Pair.of(prefix+"/products", "GET"),
+//                Pair.of(prefix+"/products", "POST"),
                 Pair.of(prefix+"/users/login", "POST"),
                 Pair.of(prefix+"/users/register", "POST"),
-                Pair.of(prefix+"/roles", "GET")
+                Pair.of(prefix+"/roles", "GET"),
+                Pair.of(prefix+"/products/generateFakerProducts", "POST")
 
         );
         for (Pair<String, String> bypassToken: bypassTokens){

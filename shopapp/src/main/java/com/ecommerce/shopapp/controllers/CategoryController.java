@@ -10,6 +10,7 @@ import com.ecommerce.shopapp.utils.MessageKeys;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -54,6 +55,7 @@ public class CategoryController {
         return ResponseEntity.ok("Insert category with name = "+categoryDto.getName());
     }
     @PutMapping("/{id}")
+    @Transactional
     public ResponseEntity<?> updateCategory(
             @Valid @PathVariable("id") Long categoryId,
             @RequestBody CategoryDto categoryDto){
@@ -76,6 +78,7 @@ public class CategoryController {
 
     }
     @DeleteMapping("/{id}")
+    @Transactional
     public ResponseEntity<?> deleteCategory(
             @PathVariable("id") Long categoryId){
         iCategoryService.deleteCategory(categoryId);

@@ -42,7 +42,11 @@ public class WebSecurityConfig {
                 request
                         .requestMatchers(
                         prefix+"/users/register",
-                        prefix+"/users/login")
+//                        prefix+"/products/generateFakerProducts",
+                        prefix+"/users/login",
+                        prefix+"/products/images/**",
+                        prefix+"/products/upload/**")
+
                         .permitAll()
 
                         //Role
@@ -77,11 +81,6 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 GET,
                                 prefix+"/products**")
-                        .permitAll()
-
-                        .requestMatchers(
-                                GET,
-                                prefix+"/products/images/*")
                         .permitAll()
 
                         .requestMatchers(
