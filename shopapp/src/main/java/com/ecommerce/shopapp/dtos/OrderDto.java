@@ -8,6 +8,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Data
@@ -50,5 +51,8 @@ public class OrderDto {
 
     @JsonProperty("shipping_date")
     private LocalDate shippingDate;
+
+    @JsonProperty("cart_items")
+    private List<CartItemDto> cartItems;
 
 }

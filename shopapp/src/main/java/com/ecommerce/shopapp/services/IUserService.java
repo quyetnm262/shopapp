@@ -7,5 +7,6 @@ import com.ecommerce.shopapp.models.User;
 public interface IUserService {
     User createUser(UserDto userDto) throws Exception;
 
-    String login(String phoneNumber, String password) throws Exception;
+    String login(String phoneNumber, String password, Long roleId) throws Exception;
+
 }

@@ -3,6 +3,7 @@ package com.ecommerce.shopapp.controllers;
 
 import com.ecommerce.shopapp.dtos.UserDto;
 import com.ecommerce.shopapp.dtos.UserLoginDto;
+import com.ecommerce.shopapp.models.Role;
 import com.ecommerce.shopapp.models.User;
 import com.ecommerce.shopapp.responses.LoginResponse;
 import com.ecommerce.shopapp.responses.RegisterResponse;
@@ -65,7 +66,10 @@ public class UserController {
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginDto userLoginDto){
 
         try {
-            String token = iUserService.login(userLoginDto.getPhoneNumber(), userLoginDto.getPassword());
+            String token = iUserService.login(
+                    userLoginDto.getPhoneNumber(),
+                    userLoginDto.getPassword(),
+                    userLoginDto.getRoleId() == null ? 2 : userLoginDto.getRoleId());
 
             return ResponseEntity.ok(LoginResponse.builder()
                     .message(localizationUtils

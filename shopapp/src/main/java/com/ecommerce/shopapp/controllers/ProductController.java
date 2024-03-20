@@ -34,10 +34,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.ecommerce.shopapp.models.ProductImage.MAXIMUM_IMAGES_PER_PRODUCT;
 
@@ -47,7 +45,7 @@ import static com.ecommerce.shopapp.models.ProductImage.MAXIMUM_IMAGES_PER_PRODU
 @RequiredArgsConstructor
 public class ProductController {
 
-    private final IProductService iProductService;
+    private final IProductService productService;
 
 
     @GetMapping("")
@@ -58,7 +56,7 @@ public class ProductController {
         PageRequest pageRequest = PageRequest.of(page, limit,
 //                Sort.by("createdAt").descending());
                 Sort.by("id").ascending());
-        Page<ProductResponse> productPage = iProductService.getAllProduct(pageRequest);
+        Page<ProductResponse> productPage = productService.getAllProduct(pageRequest);
         int totalPage = productPage.getTotalPages();
         List<ProductResponse> products = productPage.getContent();
         ProductListResponse listResponse = ProductListResponse.builder()
@@ -68,14 +66,31 @@ public class ProductController {
         return ResponseEntity.ok(listResponse);
     }
 
+    @GetMapping("/by-ids")
+    public ResponseEntity<?> getProductByIds(@RequestParam("ids") String ids){
+
+        try{
+
+            List<Long> productIds = Arrays.stream(ids.split(","))
+                    .map(Long::parseLong)
+                    .collect(Collectors.toList());
+            List<Product> products = productService.getProductByIds(productIds);
+            return ResponseEntity.ok(products);
+
+        }catch (Exception e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getProductById(
             @PathVariable("id") Long productId
-    ){
+    ) throws Exception {
 
         try {
 
-            Product existedProduct = iProductService.getProductById(productId);
+            Product existedProduct = productService.getProductById(productId);
             return ResponseEntity.ok(ProductResponse.fromProduct(existedProduct));
 
         } catch (DataNotFoundException e) {
@@ -122,7 +137,7 @@ public class ProductController {
                         .toList();
                 return ResponseEntity.badRequest().body(errorMessage);
             }
-            Product newProduct = iProductService.createProduct(productDto);
+            Product newProduct = productService.createProduct(productDto);
             return ResponseEntity.ok(ProductResponse.fromProduct(newProduct));
 
         }catch (Exception e){
@@ -139,7 +154,7 @@ public class ProductController {
 
         try{
 
-            Product existedProduct = iProductService.getProductById(productId);
+            Product existedProduct = productService.getProductById(productId);
             files = files == null ? new ArrayList<>():files;
             if (files.size() > MAXIMUM_IMAGES_PER_PRODUCT){
                 return ResponseEntity.badRequest().body("Only load max 5 images");
@@ -159,7 +174,7 @@ public class ProductController {
                             .body("File must be an image");
                 }
                 String filename = storeFile(file);
-                ProductImage productImage = iProductService.createProductImage(
+                ProductImage productImage = productService.createProductImage(
                         ProductImageDto.builder()
                                 .productId(existedProduct.getId())
                                 .imageUrl(filename)
@@ -189,7 +204,7 @@ public class ProductController {
         }
 
         try {
-            Product updatedProduct = iProductService.updateProduct(productId, productDto);
+            Product updatedProduct = productService.updateProduct(productId, productDto);
             ProductResponse productResponse = ProductResponse.fromProduct(updatedProduct);
             return ResponseEntity.ok(productResponse);
 
@@ -233,7 +248,7 @@ public class ProductController {
         Faker faker = new Faker();
         for (int i = 0; i < 50; i++) {
             String productName = faker.commerce().productName();
-            if (iProductService.existsProductByName(productName)){
+            if (productService.existsProductByName(productName)){
                 continue;
             }
             ProductDto productDto = ProductDto.builder()
@@ -246,7 +261,7 @@ public class ProductController {
 
             try{
 
-                iProductService.createProduct(productDto);
+                productService.createProduct(productDto);
 
             }catch (Exception e){
                 return ResponseEntity.badRequest().body(e.getMessage());
@@ -261,7 +276,7 @@ public class ProductController {
     public ResponseEntity<String> deleteProduct(@PathVariable("id") Long productId) {
         try {
 
-            iProductService.deleteProduct(productId);
+            productService.deleteProduct(productId);
 
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());

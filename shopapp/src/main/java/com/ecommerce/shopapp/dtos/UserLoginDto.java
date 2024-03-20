@@ -18,4 +18,6 @@ public class UserLoginDto {
 
     @NotBlank(message = "password is required")
     private String password;
+
+    private Long roleId;
 }

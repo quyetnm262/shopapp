@@ -73,7 +73,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public String login(String phoneNumber, String password) throws Exception {
+    public String login(String phoneNumber,
+                        String password,
+                        Long roleId) throws Exception {
 
         Optional<User> optionalUser = userRepository.findByPhoneNumber(phoneNumber);
 

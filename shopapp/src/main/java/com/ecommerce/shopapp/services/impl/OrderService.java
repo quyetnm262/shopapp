@@ -1,11 +1,12 @@
 package com.ecommerce.shopapp.services.impl;
 
+import com.ecommerce.shopapp.dtos.CartItemDto;
 import com.ecommerce.shopapp.dtos.OrderDto;
 import com.ecommerce.shopapp.exceptions.DataNotFoundException;
-import com.ecommerce.shopapp.models.Order;
-import com.ecommerce.shopapp.models.OrderStatus;
-import com.ecommerce.shopapp.models.User;
+import com.ecommerce.shopapp.models.*;
+import com.ecommerce.shopapp.repositories.OrderDetailRepository;
 import com.ecommerce.shopapp.repositories.OrderRepository;
+import com.ecommerce.shopapp.repositories.ProductRepository;
 import com.ecommerce.shopapp.repositories.UserRepository;
 import com.ecommerce.shopapp.responses.OrderResponse;
 import com.ecommerce.shopapp.services.IOrderService;
@@ -34,6 +35,10 @@ public class OrderService implements IOrderService {
 
     private final ModelMapperUtils modelMapperUtils;
 
+    private final ProductRepository productRepository;
+
+    private final OrderDetailRepository orderDetailRepository;
+
     @Override
     public OrderResponse createOrder(OrderDto orderDto) throws Exception{
 
@@ -58,6 +63,37 @@ public class OrderService implements IOrderService {
         order.setActive(true);
         order.setShippingDate(shippingDate);
         orderRepository.save(order);
+
+        List<OrderDetail> orderDetails = new ArrayList<>();
+
+        for (CartItemDto cartItemDto : orderDto.getCartItems()){
+
+            // Tao 1 doi tuong OrderDetail tu CartItemDto
+            OrderDetail orderDetail = new OrderDetail();
+            orderDetail.setOrder(order);
+
+            // Lay thong tin san pham tu cartItemDto
+            Long productId = cartItemDto.getProductId();
+            int quantity = cartItemDto.getQuantity();
+
+            //Tim thong tin san pham tu CSDL
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new DataNotFoundException("Product not found with id = "+productId));
+
+
+            // Set thong tin cho OrderDetail
+            orderDetail.setProduct(product);
+            orderDetail.setNumberOfProducts(quantity);
+
+            orderDetail.setPrice(product.getPrice());
+
+            //Add vao list orderDetails
+            orderDetails.add(orderDetail);
+
+        }
+
+        orderDetailRepository.saveAll(orderDetails);
+
         modelMapper.typeMap(Order.class, OrderResponse.class);
         OrderResponse orderResponse = new OrderResponse();
         modelMapper.map(order,orderResponse);

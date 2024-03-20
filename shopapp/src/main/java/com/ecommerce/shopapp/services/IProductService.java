@@ -10,20 +10,23 @@ import com.ecommerce.shopapp.responses.ProductResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
-public interface IProductService {
-    Product createProduct(ProductDto productDto) throws DataNotFoundException;
+import java.util.List;
 
-    Product getProductById(Long productId) throws DataNotFoundException;
+public interface IProductService {
+    Product createProduct(ProductDto productDto) throws Exception;
+
+    Product getProductById(Long productId) throws Exception;
+    List<Product> getProductByIds(List<Long> productId) throws Exception;
 
     Page<ProductResponse> getAllProduct(PageRequest pageRequest);
 
-    Product updateProduct(Long id, ProductDto productDto) throws DataNotFoundException;
+    Product updateProduct(Long id, ProductDto productDto) throws Exception;
 
     void deleteProduct(Long productId);
 
     boolean existsProductByName(String name);
 
-    ProductImage createProductImage(ProductImageDto productImageDto) throws DataNotFoundException, InvalidParamException;
+    ProductImage createProductImage(ProductImageDto productImageDto) throws Exception;
 
 
 }

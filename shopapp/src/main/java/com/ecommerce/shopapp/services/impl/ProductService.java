@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.ecommerce.shopapp.models.ProductImage.MAXIMUM_IMAGES_PER_PRODUCT;
@@ -48,10 +49,20 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product getProductById(Long productId) throws DataNotFoundException {
-        return productRepository.findById(productId)
-                .orElseThrow(()->
-                        new DataNotFoundException("Cannot found product with id = "+productId));
+    public Product getProductById(Long productId) throws Exception {
+
+        Optional<Product> optionalProduct = productRepository.getDetailProduct(productId);
+
+        if (optionalProduct.isPresent()){
+            return optionalProduct.get();
+        }
+
+        throw new DataNotFoundException("Cannot found product with id = "+productId);
+    }
+
+    @Override
+    public List<Product> getProductByIds(List<Long> productIds) throws Exception {
+        return productRepository.findProductsByIds(productIds);
     }
 
     @Override
@@ -64,7 +75,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Product updateProduct(Long id, ProductDto productDto) throws DataNotFoundException {
+    public Product updateProduct(Long id, ProductDto productDto) throws Exception {
 
         Category existedCategory = categoryRepository.findById(productDto.getCategoryId())
                 .orElseThrow(()->
