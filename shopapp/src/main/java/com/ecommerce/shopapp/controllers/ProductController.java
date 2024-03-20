@@ -83,7 +83,6 @@ public class ProductController {
         }
 
     }
-
     @GetMapping("/images/{imageName}")
     public ResponseEntity<?> getProductByImageName(
             @PathVariable("imageName") String imageName

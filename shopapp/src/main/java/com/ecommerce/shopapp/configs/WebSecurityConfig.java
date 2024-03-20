@@ -52,72 +52,72 @@ public class WebSecurityConfig {
                         //Role
                         .requestMatchers(
                                 GET,
-                                prefix+"/roles**")
+                                prefix+"/roles/**")
                         .permitAll()
 
 
                         //Category
                         .requestMatchers(
                                 GET,
-                                prefix+"/categories**")
+                                prefix+"/categories/**")
                         .hasAnyRole(Role.ADMIN,Role.USER)
 
                         .requestMatchers(
                                 POST,
-                                prefix+"/categories**")
+                                prefix+"/categories/**")
                         .hasAnyRole(Role.ADMIN)
 
                         .requestMatchers(
                                 PUT,
-                                prefix+"/categories**")
+                                prefix+"/categories/**")
                         .hasRole(Role.ADMIN)
 
                         .requestMatchers(
                                 DELETE,
-                                prefix+"/categories**")
+                                prefix+"/categories/**")
                         .hasRole(Role.ADMIN)
 
                         //Product
                         .requestMatchers(
                                 GET,
-                                prefix+"/products**")
+                                prefix+"/products/**")
                         .permitAll()
 
                         .requestMatchers(
                                 POST,
-                                prefix+"/products**")
+                                prefix+"/products/**")
                         .hasAnyRole(Role.ADMIN)
 
                         .requestMatchers(
                                 PUT,
-                                prefix+"/products**")
+                                prefix+"/products/**")
                         .hasRole(Role.ADMIN)
 
                         .requestMatchers(
                                 DELETE,
-                                prefix+"/products**")
+                                prefix+"/products/**")
                         .hasRole(Role.ADMIN)
 
 
                         //Order_details
                         .requestMatchers(
                                 GET,
-                                prefix+"/order_details**")
+                                prefix+"/order_details/**")
                         .hasAnyRole(Role.ADMIN,Role.USER)
 
                         .requestMatchers(
                                 POST,
-                                prefix+"/order_details**")
+                                prefix+"/order_details/**")
                         .hasAnyRole(Role.ADMIN)
 
                         .requestMatchers(
                                 PUT,
-                                prefix+"/order_details**")
+                                prefix+"/order_details/**")
                         .hasRole(Role.ADMIN)
 
                         .requestMatchers(
                                 DELETE,
-                                prefix+"/order_details**")
+                                prefix+"/order_details/**")
                         .hasRole(Role.ADMIN)
 
                         //Orders

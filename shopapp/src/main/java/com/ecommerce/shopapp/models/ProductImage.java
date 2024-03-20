@@ -1,12 +1,14 @@
 package com.ecommerce.shopapp.models;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "product_images")
-@Data
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,10 +23,12 @@ public class ProductImage {
     @Column(name = "id")
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
+    @JsonIgnore
     private Product product;
 
     @Column(name = "image_url", length = 300)
+    @JsonProperty("image_url")
     private String imageUrl;
 }
