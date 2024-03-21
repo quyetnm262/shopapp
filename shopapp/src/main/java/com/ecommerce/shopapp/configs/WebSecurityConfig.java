@@ -60,7 +60,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 GET,
                                 prefix+"/categories/**")
-                        .hasAnyRole(Role.ADMIN,Role.USER)
+                        .permitAll()
 
                         .requestMatchers(
                                 POST,
@@ -124,7 +124,7 @@ public class WebSecurityConfig {
                         .requestMatchers(
                                 GET,
                                 prefix+"/orders/**")
-                        .hasAnyRole(Role.ADMIN,Role.USER)
+                        .permitAll()
 
                         .requestMatchers(
                                 POST,

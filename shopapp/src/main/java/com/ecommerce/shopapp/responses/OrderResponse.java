@@ -1,6 +1,7 @@
 package com.ecommerce.shopapp.responses;
 
 
+import com.ecommerce.shopapp.models.OrderDetail;
 import com.ecommerce.shopapp.models.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -8,6 +9,7 @@ import lombok.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Getter
@@ -19,7 +21,7 @@ public class OrderResponse extends BaseResponse{
 
     private Long id;
 
-    @JsonProperty("full_name")
+    @JsonProperty("fullname")
     private String fullName;
 
     private String email;
@@ -57,5 +59,8 @@ public class OrderResponse extends BaseResponse{
     private boolean active;
 
     private User user;
+
+    @JsonProperty("order_details")
+    private List<OrderDetail> orderDetails;
 
 }

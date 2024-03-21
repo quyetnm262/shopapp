@@ -1,6 +1,8 @@
 package com.ecommerce.shopapp.models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +23,7 @@ public class OrderDetail {
 
     @ManyToOne
     @JoinColumn(name = "order_id")
+    @JsonIgnore
     private Order order;
 
     @ManyToOne
@@ -31,6 +34,7 @@ public class OrderDetail {
     private Float price;
 
     @Column(name = "number_of_products")
+    @JsonProperty("number_of_products")
     private Integer numberOfProducts;
 
     @Column(name = "total_money")
