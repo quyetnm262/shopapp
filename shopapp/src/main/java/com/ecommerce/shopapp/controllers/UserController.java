@@ -7,6 +7,7 @@ import com.ecommerce.shopapp.models.Role;
 import com.ecommerce.shopapp.models.User;
 import com.ecommerce.shopapp.responses.LoginResponse;
 import com.ecommerce.shopapp.responses.RegisterResponse;
+import com.ecommerce.shopapp.responses.UserResponse;
 import com.ecommerce.shopapp.services.IUserService;
 import com.ecommerce.shopapp.components.LocalizationUtils;
 import com.ecommerce.shopapp.utils.MessageKeys;
@@ -16,10 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -28,7 +26,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserController {
 
-    private final IUserService iUserService;
+    private final IUserService userService;
 
     private final LocalizationUtils localizationUtils;
 
@@ -49,7 +47,7 @@ public class UserController {
                 );
             }
 
-            User user = iUserService.createUser(userDto);
+            User user = userService.createUser(userDto);
             return ResponseEntity.ok(user);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
@@ -66,7 +64,7 @@ public class UserController {
     public ResponseEntity<?> login(@Valid @RequestBody UserLoginDto userLoginDto){
 
         try {
-            String token = iUserService.login(
+            String token = userService.login(
                     userLoginDto.getPhoneNumber(),
                     userLoginDto.getPassword(),
                     userLoginDto.getRoleId() == null ? 2 : userLoginDto.getRoleId());
@@ -84,6 +82,19 @@ public class UserController {
                                     .getLocalizationMessage(MessageKeys.LOGIN_FAIL, e.getMessage()))
                             .build()
             );
+        }
+    }
+
+    @PostMapping("/details")
+    public ResponseEntity<?> getUserDetails(@RequestHeader("Authorization") String token){
+        try{
+
+            String extractedToken = token.substring(7);
+            User user = userService.getUserDetailsFromToken(extractedToken);
+            return ResponseEntity.ok(UserResponse.fromUser(user));
+        }catch (Exception e ){
+
+            return ResponseEntity.badRequest().build();
         }
     }
 }

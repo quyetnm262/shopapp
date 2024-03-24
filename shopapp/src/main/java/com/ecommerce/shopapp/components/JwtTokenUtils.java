@@ -33,6 +33,7 @@ public class JwtTokenUtils {
 
         Map<String, Object> claim = new HashMap<>();
         claim.put("phoneNumber", user.getPhoneNumber());
+        claim.put("userId", user.getId());
         this.generateSecretKey();
 
         try{
