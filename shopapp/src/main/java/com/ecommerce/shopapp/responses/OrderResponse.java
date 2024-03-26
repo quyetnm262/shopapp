@@ -1,6 +1,7 @@
 package com.ecommerce.shopapp.responses;
 
 
+import com.ecommerce.shopapp.models.Order;
 import com.ecommerce.shopapp.models.OrderDetail;
 import com.ecommerce.shopapp.models.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -58,9 +59,32 @@ public class OrderResponse extends BaseResponse{
 
     private boolean active;
 
-    private User user;
+    @JsonProperty("user_id")
+    private Long userId;
 
     @JsonProperty("order_details")
     private List<OrderDetail> orderDetails;
+
+    public static OrderResponse fromOrder(Order order) {
+        OrderResponse orderResponse =  OrderResponse
+                .builder()
+                .id(order.getId())
+                .userId(order.getUser().getId())
+                .fullName(order.getFullName())
+                .phoneNumber(order.getPhoneNumber())
+                .email(order.getEmail())
+                .address(order.getAddress())
+                .note(order.getNote())
+                .orderDate(order.getOrderDate())
+                .status(order.getStatus())
+                .totalMoney(order.getTotalMoney())
+                .shippingMethod(order.getShippingMethod())
+                .shippingAddress(order.getShippingAddress())
+                .shippingDate(order.getShippingDate())
+                .paymentMethod(order.getPaymentMethod())
+                .orderDetails(order.getOrderDetails())
+                .build();
+        return orderResponse;
+    }
 
 }

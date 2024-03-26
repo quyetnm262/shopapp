@@ -13,6 +13,8 @@ import com.ecommerce.shopapp.services.IOrderService;
 import com.ecommerce.shopapp.utils.ModelMapperUtils;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.DateTimeException;
@@ -155,6 +157,12 @@ public class OrderService implements IOrderService {
     @Override
     public List<OrderResponse> findOrderById(Long orderId) {
         return null;
+    }
+
+    @Override
+    public Page<Order> getOrderByKeyword(String keyword, Pageable pageable) {
+
+        return orderRepository.findByKeyword(keyword, pageable);
     }
 
 }

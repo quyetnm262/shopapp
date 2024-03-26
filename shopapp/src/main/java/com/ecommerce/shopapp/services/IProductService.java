@@ -18,7 +18,7 @@ public interface IProductService {
     Product getProductById(Long productId) throws Exception;
     List<Product> getProductByIds(List<Long> productId) throws Exception;
 
-    Page<ProductResponse> getAllProduct(PageRequest pageRequest);
+    Page<ProductResponse> getAllProduct(String keyword, Long categoryId, PageRequest pageRequest);
 
     Product updateProduct(Long id, ProductDto productDto) throws Exception;
 

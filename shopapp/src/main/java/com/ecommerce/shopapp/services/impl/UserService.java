@@ -1,5 +1,6 @@
 package com.ecommerce.shopapp.services.impl;
 
+import com.ecommerce.shopapp.dtos.UpdateUserDto;
 import com.ecommerce.shopapp.dtos.UserDto;
 import com.ecommerce.shopapp.exceptions.DataNotFoundException;
 import com.ecommerce.shopapp.exceptions.PermissionDenyException;
@@ -15,6 +16,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -121,5 +123,59 @@ public class UserService implements IUserService {
             throw new Exception("User not found");
         }
 
+    }
+
+    @Transactional
+    @Override
+    public User updateUser(UpdateUserDto userDto, Long userId) throws Exception{
+
+        User existedUser = userRepository
+                .findById(userId)
+                .orElseThrow(
+                        ()-> new DataNotFoundException("User not found")
+                );
+
+        String newPhoneNumber = userDto.getPhoneNumber();
+        if (!existedUser.getPhoneNumber().equals(newPhoneNumber)
+        && userRepository.existsByPhoneNumber(newPhoneNumber)){
+            throw new DataIntegrityViolationException("Phone Number already existed");
+        }
+
+        if (userDto.getFullName() != null){
+            existedUser.setFullName(userDto.getFullName());
+        }
+
+        if (userDto.getDateOfBirth() != null){
+            existedUser.setDateOfBirth(userDto.getDateOfBirth());
+        }
+
+        if (userDto.getAddress() != null){
+            existedUser.setAddress(userDto.getAddress());
+        }
+
+        if (userDto.getGoogleAccountId() > 0){
+            existedUser.setGoogleAccountId(userDto.getGoogleAccountId());
+        }
+
+        if (userDto.getFacebookAccountId() > 0){
+            existedUser.setFacebookAccountId(userDto.getFacebookAccountId());
+        }
+
+        if (userDto.getPassword() != null
+        && !userDto.getPassword().isEmpty()){
+
+            if (!userDto.getRetypePassword().equals(userDto.getPassword())){
+
+                throw new DataNotFoundException("Password and retype password not match together");
+            }
+
+            String newPassword = userDto.getPassword();
+            String encodedPassword = passwordEncoder.encode(newPassword);
+            existedUser.setPassword(encodedPassword);
+        }
+
+
+
+        return userRepository.save(existedUser);
     }
 }

@@ -75,7 +75,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
             final List<Pair<String, String>> bypassTokens = Arrays.asList(
                     Pair.of(prefix+"/categories", "GET"),
-                    Pair.of(prefix+"/orders", "GET"),
+//                    Pair.of(prefix+"/orders", "GET"),
                     Pair.of(prefix+"/products", "GET"),
 //                    Pair.of(prefix+"/products", "POST"),
                     Pair.of(prefix+"/users/login", "POST"),
@@ -103,7 +103,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         final List<Pair<String, String>> bypassTokens = Arrays.asList(
                 Pair.of(prefix+"/categories", "GET"),
                 Pair.of(prefix+"/products", "GET"),
-                Pair.of(prefix+"/orders", "GET"),
+//                Pair.of(prefix+"/orders", "GET"),
 //                Pair.of(prefix+"/products", "POST"),
                 Pair.of(prefix+"/users/login", "POST"),
                 Pair.of(prefix+"/users/register", "POST"),
@@ -111,6 +111,13 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 Pair.of(prefix+"/products/generateFakerProducts", "POST")
 
         );
+        String requestPath = request.getServletPath();
+        String requestMethod = request.getMethod();
+
+        if (requestPath.equals(String.format("%s/orders", prefix))
+        && requestMethod.equals("GET")){
+            return true;
+        }
         for (Pair<String, String> bypassToken: bypassTokens){
             if (request.getServletPath().contains(bypassToken.getFirst())
                     && request.getMethod().equals(bypassToken.getSecond())){

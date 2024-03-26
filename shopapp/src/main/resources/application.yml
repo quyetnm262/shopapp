@@ -6,7 +6,7 @@ spring:
     url: jdbc:mysql://localhost:3306/shopapp?useSSL=false&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: admin
   jpa:
     show-sql: true
     hibernate:
@@ -31,5 +31,6 @@ jwt:
   expiration: 2592000
     #30 days = 30*24*60*60 =
   secretKey: billie Jean - Michael Jackson
-
-
+logging:
+  level:
+    sql: debug

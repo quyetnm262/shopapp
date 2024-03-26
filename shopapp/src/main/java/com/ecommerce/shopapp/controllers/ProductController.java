@@ -14,6 +14,8 @@ import com.ecommerce.shopapp.services.IProductService;
 import com.github.javafaker.Faker;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -47,17 +49,26 @@ public class ProductController {
 
     private final IProductService productService;
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
+
 
     @GetMapping("")
     public ResponseEntity<?> getProducts(
-            @RequestParam("page") int page,
-            @RequestParam("limit") int limit
+            @RequestParam(defaultValue = "") String keyword,
+            @RequestParam(defaultValue = "0", name = "category_id") Long categoryId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int limit
     ){
         PageRequest pageRequest = PageRequest.of(page, limit,
 //                Sort.by("createdAt").descending());
                 Sort.by("id").ascending());
-        Page<ProductResponse> productPage = productService.getAllProduct(pageRequest);
+
+        logger.info(String.format("keyword = %s, categoryId = %d, page = %d, limit = %d"
+                ,keyword,categoryId, page, limit));
+        Page<ProductResponse> productPage = productService.getAllProduct(keyword, categoryId, pageRequest);
         int totalPage = productPage.getTotalPages();
+
+
         List<ProductResponse> products = productPage.getContent();
         ProductListResponse listResponse = ProductListResponse.builder()
                 .products(products)
